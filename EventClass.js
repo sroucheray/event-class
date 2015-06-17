@@ -1,4 +1,4 @@
-const multiChannelSep = /\s+/g;
+const multiChannelSep = /(?:,|\s)+/g;
 const channelSep = /:+/g;
 
 class EventClass {
@@ -6,117 +6,74 @@ class EventClass {
         this._channels = {};
     }
 
-    getChannels(channelString){
+    _getChannels(channelString){
         return channelString.trim().split(multiChannelSep);
     }
 
-    splitChannel(channel){
-        return channel.trim().split(channelSep);
+    _getNameSpaces(channel){
+        let namespaces = [];
+        let splittedChannels = channel.trim().split(channelSep);
+
+        for (var i = splittedChannels.length; i >= 1; i--) {
+            namespaces.push(splittedChannels.slice(0, i).join(":"))
+        }
+
+        return namespaces;
     }
 
-    iterateChannel(channel, channelCallback, callbackCallback){
-        let channels = this.getChannels(channel);
+    trigger(event, data){
+        let channels = this._getChannels(event);
 
         for (let channel of channels){
-            let channelSplit = this.splitChannel(channel);
-            let lastChan = this._channels;
-
-            for (let ch of channelSplit){
-                let result = channelCallback.call(this, lastChan, ch);
-                if(!result){
-                    break
+            let namespaces = this._getNameSpaces(channel);
+            for (let namespace of namespaces){
+                if(!this._channels[namespace]){
+                    continue;
                 }
 
-                lastChan = lastChan[ch];
-            }
-
-            callbackCallback.call(this, lastChan);
-        }
-    }
-
-    trigger(channel, data){
-        this.iterateChannel(
-            channel,
-            (channelLeaf, ch)=>{
-                if(channelLeaf[ch]){
-                    return true;
-                }
-
-            },
-            (channelLeaf)=>{
-                if(!channelLeaf.callbacks){
-                    return;
-                }
-
-                for (let callback of channelLeaf.callbacks){
+                for(let callback of this._channels[namespace]){
                     callback.call(this, data);
                 }
             }
-        );
+        }
     }
 
-    on(channel, callback){
-        this.iterateChannel(
-            channel,
-            (channelLeaf, ch)=>{
-                if(!channelLeaf[ch]){
-                    channelLeaf[ch]= {};
-                }
+    on(event, callback){
+        let channels = this._getChannels(event);
 
-                return true;
-            },
-            (channelLeaf)=>{
-                if(!channelLeaf.callbacks){
-                    channelLeaf.callbacks = [];
-                }
-
-                channelLeaf.callbacks.push(callback);
+        for (let channel of channels){
+            if(!this._channels[channel]){
+                this._channels[channel] = [];
             }
-        );
+
+            this._channels[channel].push(callback);
+        }
     }
 
-    off(channel, callback){
-        if(!channel){
-            this._channels = {};
+    off(event, callback){
+        let channels = this._getChannels(event);
 
-            return;
+        for (let channel of channels){
+            if(!this._channels[channel]){
+                return;
+            }
+
+            let index = this._channels[channel].indexOf(callback);
+
+            if(index > -1){
+                this._channels[channel].splice(index, 1);
+            }
+        }
+    }
+
+    once(event, callback){
+        function offCallback(){
+            this.off(event, callback);
+            this.off(event, offCallback);
         }
 
-        this.iterateChannel(
-            channel,
-            (channelLeaf, ch)=>{
-                if(channelLeaf[ch]){
-                    return true;
-                }
-
-            },
-            (channelLeaf)=>{
-                if(!channelLeaf.callbacks){
-                    return;
-                }
-
-                if(!callback){
-                    channelLeaf.callbacks = [];
-
-                    return;
-                }
-
-                let index = channelLeaf.callbacks.indexOf(callback);
-                    console.log(channelLeaf.callbacks,callback)
-                if(index > -1){
-                    console.log(channelLeaf.callbacks)
-                    channelLeaf.callbacks.splice(index, 1);
-                    console.log(channelLeaf.callbacks)
-                }
-            }
-        );
-    }
-
-    once(channel, callback){
-        this.one(channel, function onceCallback(data){
-            callbacks.call(this, data);
-            this.off(channel, onceCallback);
-        }.bind(this));
+        this.on(event, callback);
+        this.on(event, offCallback);
     }
 }
 

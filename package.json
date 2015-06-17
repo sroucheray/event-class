@@ -1,8 +1,35 @@
 {
+  "name": "event-class",
+  "version": "0.1.0",
+  "description": "A lightweight event class based on JavaScript (ES6) classes",
+  "main": "EventClass.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sroucheray/event-class.git"
+  },
+  "keywords": [
+    "es6",
+    "class",
+    "event",
+    "channel",
+    "pubsub",
+    "javascript"
+  ],
+  "author": "@sroucheray",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sroucheray/event-class/issues"
+  },
+  "homepage": "https://github.com/sroucheray/event-class#readme",
   "jspm": {
     "directories": {},
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
       "traceur": "github:jmcriffey/bower-traceur@0.0.89",
       "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.89",
