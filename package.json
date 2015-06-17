@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/sroucheray/event-class#readme",
   "jspm": {
-    "files": ["EventClass.js"]
+    "files": ["EventClass.js"],
     "directories": {},
     "dependencies": {},
     "devDependencies": {
