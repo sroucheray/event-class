@@ -9,6 +9,7 @@
   "scripts": {
   },
   "files": ["EventClass.js"],
+  "format": "es6",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sroucheray/event-class.git"
@@ -28,7 +29,6 @@
   },
   "homepage": "https://github.com/sroucheray/event-class#readme",
   "jspm": {
-    "format": "es6",
     "directories": {},
     "dependencies": {},
     "devDependencies": {
