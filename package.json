@@ -1,7 +1,7 @@
 {
   "name": "event-class",
   "version": "0.1.0",
-  "description": "A lightweight event class based on JavaScript (ES6) classes",
+  "description": "A lightweight Event class defined in small module (JavaScript/ES6)",
   "main": "EventClass.js",
   "directories": {
     "test": "test"
@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/sroucheray/event-class#readme",
   "jspm": {
+    "files": ["EventClass.js"]
     "directories": {},
     "dependencies": {},
     "devDependencies": {
