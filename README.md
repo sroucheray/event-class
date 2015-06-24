@@ -3,7 +3,7 @@
 
 ## Installation
 
-Use [jspm](http://jspm.io/) ease the use of ES6 features and it installs the package from the npm registry
+Use [jspm](http://jspm.io/) to eases the use of ES6 features, the package is installed from the npm registry
 
 ```bash
 jspm install npm:event-class
@@ -32,7 +32,7 @@ function namedFunction(data){
 // Listen to the 'change' event
 anyObject.on("change", namedFunction);
 
-// Listen once to the 'change:attribute' event 
+// Listen once to the 'change:attribute' event
 anyObject.once("change:attribute", function(data){
 	console.log("change:attribute event :", data);
 });
@@ -49,6 +49,6 @@ anyObject.trigger("change:attribute", "Hello 3 !");
 > change event : Hello 1 !
 > change event : Hello 2 !
 
-No output with "Hello 3 !" because there is no listener anymore 
+No output with "Hello 3 !" because there is no listener anymore
 */
 ```
