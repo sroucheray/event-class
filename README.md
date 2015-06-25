@@ -52,7 +52,7 @@ anyObject.trigger("change:attribute", "Hello 3 !");
 No output with "Hello 3 !" because there is no listener anymore
 */
 
-/* How to listen to or to trigger several event at the same time */
+/* How to listen to or to trigger several events at the same time */
 // Space separated events style
 anyObject.on("change:attribute change:value ping");
 anyObject.trigger("change:attribute change:value ping");
