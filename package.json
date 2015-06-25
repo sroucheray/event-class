@@ -7,8 +7,11 @@
     "test": "test"
   },
   "scripts": {
+    "test": "mocha test/test"
   },
-  "files": ["EventClass.js"],
+  "files": [
+    "EventClass.js"
+  ],
   "format": "es6",
   "repository": {
     "type": "git",
@@ -29,12 +32,11 @@
   },
   "homepage": "https://github.com/sroucheray/event-class#readme",
   "jspm": {
-    "directories": {},
-    "dependencies": {},
     "devDependencies": {
-      "traceur": "github:jmcriffey/bower-traceur@0.0.89",
-      "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.89",
-      "jquery/qunit": "github:jquery/qunit@^1.18.0"
+      "traceur": "github:jmcriffey/bower-traceur@0.0.88",
+      "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.88"
     }
+  },
+    "jspm": "^0.15.7"
   }
 }

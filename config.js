@@ -1,17 +1,18 @@
 System.config({
-  "transpiler": "traceur",
   "baseURL": "/",
+  "transpiler": "traceur",
   "paths": {
     "*": "*.js",
-    "github:*": "jspm_packages/github/*.js"
+    "github:*": "jspm_packages/github/*.js",
+    "npm:*": "jspm_packages/npm/*.js"
   }
 });
 
 System.config({
   "map": {
-    "jquery/qunit": "github:jquery/qunit@1.18.0",
-    "traceur": "github:jmcriffey/bower-traceur@0.0.89",
-    "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.89"
+    "jspm": "jspm_packages/system",
+    "traceur": "github:jmcriffey/bower-traceur@0.0.88",
+    "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.88"
   }
 });
 

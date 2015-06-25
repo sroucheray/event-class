@@ -1,265 +1,421 @@
-import EventClass from "EventClass";
-import QUnit from "jquery/qunit";
+var System = require("jspm");
+var assert = require("assert");
 
-class DummyClass extends EventClass{
-}
-
-QUnit.module("Private methods");
-QUnit.test("Test _getChannels", function( assert ) {
-    let dummyObject = new DummyClass();
-
-    let result = dummyObject._getChannels("change");
-
-    assert.equal(result.length, 1);
-    assert.equal(result[0], "change");
-
-    result = dummyObject._getChannels("test, change");
-
-    assert.equal(result.length, 2);
-    assert.equal(result[0], "test");
-    assert.equal(result[1], "change");
-
-    result = dummyObject._getChannels("test change");
-
-    assert.equal(result.length, 2);
-    assert.equal(result[0], "test");
-    assert.equal(result[1], "change");
-
-    result = dummyObject._getChannels("  test2 change2,  change3");
-
-    assert.equal(result.length, 3);
-    assert.equal(result[0], "test2");
-    assert.equal(result[1], "change2");
-    assert.equal(result[2], "change3");
-});
-QUnit.test("Test _getNameSpaces", function( assert ) {
-    let dummyObject = new DummyClass();
-
-    let result = dummyObject._getNameSpaces("change");
-
-    assert.equal(result.length, 1);
-    assert.equal(result[0], "change");
-
-    result = dummyObject._getNameSpaces("change:test");
-
-    assert.equal(result.length, 2);
-    assert.equal(result[0], "change:test");
-    assert.equal(result[1], "change");
-
-    result = dummyObject._getNameSpaces(" change:test2 ");
-
-    assert.equal(result.length, 2);
-    assert.equal(result[0], "change:test2");
-    assert.equal(result[1], "change");
-
-    result = dummyObject._getNameSpaces(" change:test2:attribute");
-
-    assert.equal(result.length, 3);
-    assert.equal(result[0], "change:test2:attribute");
-    assert.equal(result[1], "change:test2");
-    assert.equal(result[2], "change");
-
+var promise = System.import("test/es6-test-setup").catch(function(e) {
+    describe("JSPM", function() {
+        it("ES6 module not loaded properly", function(done) {
+            assert.fail(null, "", e);
+        })
+    })
 });
 
-QUnit.module("Simple trigger");
-QUnit.test("Test trigger", function( assert ) {
-    let dummyObject = new DummyClass();
+describe("Private methods", function() {
+    describe("#_getChannels", function() {
+        it("string events should splitted by spaces and comas in channels", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
 
-    dummyObject.on("change", function(){
-        assert.ok(true);
+                var result = dummyObject._getChannels("change");
+
+                assert.equal(result.length, 1);
+                assert.equal(result[0], "change");
+
+                result = dummyObject._getChannels("test, change");
+
+                assert.equal(result.length, 2);
+                assert.equal(result[0], "test");
+                assert.equal(result[1], "change");
+
+                result = dummyObject._getChannels("test change");
+
+                assert.equal(result.length, 2);
+                assert.equal(result[0], "test");
+                assert.equal(result[1], "change");
+
+                result = dummyObject._getChannels("  test2 change2,  change3");
+
+                assert.equal(result.length, 3);
+                assert.equal(result[0], "test2");
+                assert.equal(result[1], "change2");
+                assert.equal(result[2], "change3");
+                done();
+            });
+
+        });
+
+        it("namespaces should be extracted from channels", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                var result = dummyObject._getNameSpaces("change");
+
+                assert.equal(result.length, 1);
+                assert.equal(result[0], "change");
+
+                result = dummyObject._getNameSpaces("change:test");
+
+                assert.equal(result.length, 2);
+                assert.equal(result[0], "change:test");
+                assert.equal(result[1], "change");
+
+                result = dummyObject._getNameSpaces(" change:test2 ");
+
+                assert.equal(result.length, 2);
+                assert.equal(result[0], "change:test2");
+                assert.equal(result[1], "change");
+
+                result = dummyObject._getNameSpaces(" change:test2:attribute");
+
+                assert.equal(result.length, 3);
+                assert.equal(result[0], "change:test2:attribute");
+                assert.equal(result[1], "change:test2");
+                assert.equal(result[2], "change");
+                done();
+            });
+
+        });
+    });
+});
+
+
+describe("Simple trigger", function() {
+    describe("#on and #trigger", function() {
+        it("a trigger must be listened", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.on("change", function(){
+                    assert.ok(true);
+                });
+
+                dummyObject.trigger("change");
+                done();
+            });
+
+        });
+
+        it("this object must be the dispatcher", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.on("change", function(){
+                    assert.equal(this, dummyObject);
+                });
+
+                dummyObject.trigger("change");
+                done();
+            });
+
+        });
+
+        it("data should be passed through the dispatched event", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.on("change", function(data){
+                    assert.equal("test", data.test);
+                });
+
+                dummyObject.trigger("change", { test: "test"});
+                done();
+            });
+
+        });
+
+        it("two triggers must be listened", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+                var numAssertions = 0;
+
+                dummyObject.on("change", function(){
+                    assert.ok(true);
+                    numAssertions++;
+                    if(numAssertions === 2){
+                        done();
+                    }
+                });
+
+                dummyObject.trigger("change");
+                dummyObject.trigger("change");
+            });
+
+        });
+    });
+});
+
+
+describe("Sub channel trigger", function() {
+    describe("Test sub channel trigger", function() {
+        it("a trigger on a sub channel must be listened by its parent channel", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.on("change", function(){
+                    assert.ok(true);
+                });
+
+                dummyObject.trigger("change:object");
+                done();
+            });
+
+        });
+        it("a trigger on a channel must not be listened by a child channel", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.on("change:object", function(){
+                    assert.ok(false);
+                });
+
+                dummyObject.on("change", function(){
+                    assert.ok(true);
+                });
+
+                dummyObject.trigger("change");
+                done();
+            });
+
+        });
+    });
+});
+
+
+describe("Sub sub channel trigger", function() {
+    describe("Test sub sub channel trigger", function() {
+        it("a trigger on a sub sub channel must be listened by its grand parent channel", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.on("change", function(){
+                    assert.ok(true);
+                });
+
+                dummyObject.trigger("change:object:attribute");
+                done();
+            });
+
+        });
+        it("a trigger on a sub channel must not be listened by a sibling channel", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.on("change:object:attribute", function(){
+                    assert.ok(false);
+                });
+
+                dummyObject.on("change", function(){
+                    assert.ok(true);
+                });
+
+
+                dummyObject.trigger("change:object");
+                dummyObject.trigger("change:attribute")
+                done();
+            });
+
+        });
+    });
+});
+
+describe("Remove listener", function() {
+    describe("#off", function() {
+        it("an added and removed event must not be listened anymore", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                function namedCallback(){
+                    assert.ok(false);
+                }
+
+                dummyObject.on("change", namedCallback);
+                dummyObject.off("change", namedCallback);
+
+                dummyObject.trigger("change");
+                done();
+            });
+
+        });
+        it("an added and removed namespaced event must not be listened anymore", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                function namedCallback(){
+                    assert.notOk(true);
+                }
+
+                dummyObject.on("change:object", namedCallback);
+                dummyObject.off("change:object", namedCallback);
+
+                dummyObject.trigger("change:object");
+                done();
+            });
+
+        });
+    });
+});
+
+
+describe("Once callback", function() {
+    describe("#once", function() {
+        it("a once callback must be called on a single trigger", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+
+                dummyObject.once("change", function(){
+                    assert.ok(true);
+                });
+
+                dummyObject.trigger("change");
+                done();
+            });
+
+        });
+
+        it("a once callback must be called a single time", function(done) {
+            promise.then(function(value) {
+                var DummyClass = value.default;
+                var dummyObject = new DummyClass();
+                var numAssertions = 0;
+                function namedCallback(){
+                    if(numAssertions === 0){
+                        assert.ok(true);
+                    }else{
+                        assert.ok(false);
+                    }
+                    numAssertions++;
+                }
+
+                dummyObject.once("change", namedCallback);
+
+                dummyObject.trigger("change");
+                dummyObject.trigger("change");
+                dummyObject.trigger("change");
+
+                done();
+            });
+
+        });
+    });
+});
+describe("Mutliple listeners", function() {
+    it("coma separated events should listen to all registered events", function(done) {
+        promise.then(function(value) {
+            var DummyClass = value.default;
+            var dummyObject = new DummyClass();
+            var numAssertions = 0;
+
+            dummyObject.on("change, test", function(){
+                assert.ok(true);
+                numAssertions++;
+            });
+
+            dummyObject.trigger("change");
+            dummyObject.trigger("test");
+            assert.ok(numAssertions === 2);
+            done();
+        });
+
+    });
+    it("space separated events should listen to all registered events", function(done) {
+        promise.then(function(value) {
+            var DummyClass = value.default;
+            var dummyObject = new DummyClass();
+            var numAssertions = 0;
+
+            dummyObject.on("change test", function(){
+                assert.ok(true);
+                numAssertions++;
+            });
+
+            dummyObject.trigger("change");
+            dummyObject.trigger("test");
+            assert.ok(numAssertions === 2);
+            done();
+        });
+
     });
 
-    dummyObject.trigger("change");
-});
+    it("sub channel coma separated events should listen to all registered events", function(done) {
+        promise.then(function(value) {
+            var DummyClass = value.default;
+            var dummyObject = new DummyClass();
+            var numAssertions = 0;
 
-QUnit.test("Test this", function( assert ) {
-    let dummyObject = new DummyClass();
+            dummyObject.on("change:attr, test:value", function(){
+                assert.ok(true);
+                numAssertions++;
+            });
 
-    dummyObject.on("change", function(){
-        assert.equal(this, dummyObject);
+            dummyObject.trigger("change:attr");
+            dummyObject.trigger("test:value");
+            assert.ok(numAssertions === 2);
+            done();
+        });
+
     });
 
-    dummyObject.trigger("change");
-});
+    it("sub channel space separated events should listen to all registered events", function(done) {
+        promise.then(function(value) {
+            var DummyClass = value.default;
+            var dummyObject = new DummyClass();
+            var numAssertions = 0;
 
-QUnit.test("Test data", function( assert ) {
-    let dummyObject = new DummyClass();
+            dummyObject.on("change:attr test:value", function(){
+                assert.ok(true);
+                numAssertions++;
+            });
 
-    dummyObject.on("change", function(data){
-        assert.equal("test", data.test);
+            dummyObject.trigger("change:attr");
+            dummyObject.trigger("test:value");
+            assert.ok(numAssertions === 2);
+            done();
+        });
     });
 
-    dummyObject.trigger("change", { test: "test"});
-});
+    it("sub channel space separated events should listen to all registered events (coma separated trigger)", function(done) {
+        promise.then(function(value) {
+            var DummyClass = value.default;
+            var dummyObject = new DummyClass();
+            var numAssertions = 0;
 
-QUnit.test("Test two triggers", function( assert ) {
-    assert.expect(2);
-    let dummyObject = new DummyClass();
+            dummyObject.on("change:attr test:value", function(){
+                assert.ok(true);
+                numAssertions++;
+            });
 
-    dummyObject.on("change", function(){
-        assert.ok(true);
+            dummyObject.trigger("change:attr, test:value");
+            assert.ok(numAssertions === 2);
+            done();
+        });
     });
 
-    dummyObject.trigger("change");
-    dummyObject.trigger("change");
-});
+    it("sub channel space separated events should listen to all registered events (space separated trigger)", function(done) {
+        promise.then(function(value) {
+            var DummyClass = value.default;
+            var dummyObject = new DummyClass();
+            var numAssertions = 0;
 
+            dummyObject.on("change:attr test:value", function(){
+                assert.ok(true);
+                numAssertions++;
+            });
 
-QUnit.module("Simple channel trigger");
-QUnit.test("Test trigger", function( assert ) {
-    let dummyObject = new DummyClass();
-
-    dummyObject.on("change", function(){
-        assert.ok(true);
+            dummyObject.trigger("change:attr test:value");
+            assert.ok(numAssertions === 2);
+            done();
+        });
     });
-
-    dummyObject.trigger("change");
 });
-
-QUnit.test("Test this", function( assert ) {
-    let dummyObject = new DummyClass();
-    assert.expect(2);
-
-    dummyObject.on("change:value", function(){
-        assert.equal(this, dummyObject);
-    });
-
-    dummyObject.once("change:othervalue", function(){
-        assert.equal(this, dummyObject);
-    });
-
-    dummyObject.trigger("change:value");
-    dummyObject.trigger("change:othervalue");
-});
-
-QUnit.test("Test data", function( assert ) {
-    let dummyObject = new DummyClass();
-
-    dummyObject.on("change:value", function(data){
-        assert.equal("test", data.test);
-    });
-
-    dummyObject.trigger("change:value", { test: "test"});
-});
-
-QUnit.test("Test two triggers", function( assert ) {
-    assert.expect(2);
-    let dummyObject = new DummyClass();
-
-    dummyObject.on("change:value", function(){
-        assert.ok(true);
-    });
-
-    dummyObject.trigger("change:value");
-    dummyObject.trigger("change:value");
-});
-
-
-QUnit.module("Sub channel trigger");
-QUnit.test("Test sub channel trigger", function( assert ) {
-    let dummyObject = new DummyClass();
-
-    dummyObject.on("change", function(){
-        assert.ok(true);
-    });
-
-    dummyObject.trigger("change:object");
-});
-QUnit.test("Test sub channel no trigger", function( assert ) {
-    assert.expect(1);
-    let dummyObject = new DummyClass();
-
-    dummyObject.on("change:object", function(){
-        assert.notOk();
-    });
-
-    dummyObject.on("change", function(){
-        assert.ok(true);
-    });
-
-    dummyObject.trigger("change");
-});
-
-
-QUnit.module("Sub sub channel trigger");
-QUnit.test("Test sub sub channel trigger", function( assert ) {
-    let dummyObject = new DummyClass();
-
-    dummyObject.on("change", function(){
-        assert.ok(true);
-    });
-
-    dummyObject.trigger("change:object:attribute");
-});
-QUnit.test("Test sub sub channel no trigger", function( assert ) {
-    assert.expect(2);
-    let dummyObject = new DummyClass();
-
-    dummyObject.on("change:object:attribute", function(){
-        assert.ok(false);
-    });
-
-    dummyObject.on("change", function(){
-        assert.ok(true);
-    });
-
-
-    dummyObject.trigger("change:object");
-    dummyObject.trigger("change:attribute");
-});
-
-
-QUnit.module("Remove listener (off)");
-QUnit.test("Simple off", function( assert ) {
-    assert.expect(0);
-    let dummyObject = new DummyClass();
-
-    function namedCallback(){
-        assert.notOk(true);
-    }
-
-    dummyObject.on("change", namedCallback);
-    dummyObject.off("change", namedCallback);
-
-    dummyObject.trigger("change");
-});
-QUnit.test("Sub channel off", function( assert ) {
-    assert.expect(0);
-    let dummyObject = new DummyClass();
-
-    function namedCallback(){
-        assert.notOk(true);
-    }
-
-    dummyObject.on("change:object", namedCallback);
-    dummyObject.off("change:object", namedCallback);
-
-    dummyObject.trigger("change:object");
-});
-
-QUnit.module("Once callback");
-QUnit.test("Once callback", function( assert ) {
-    let dummyObject = new DummyClass();
-
-    dummyObject.once("change", function(){
-        assert.ok(true);
-    });
-
-    dummyObject.trigger("change");
-});
-QUnit.test("Off on once callback", function( assert ) {
-    let dummyObject = new DummyClass();
-    assert.expect(0);
-
-    function namedCallback(){
-        assert.notOk(true);
-    }
-
-    dummyObject.once("change", namedCallback);
-    dummyObject.off("change", namedCallback);
-
-    dummyObject.trigger("change");
-});
-
-QUnit.config.autostart = true;
-QUnit.load();
