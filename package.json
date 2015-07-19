@@ -38,6 +38,7 @@
     }
   },
   "devDependencies": {
-    "jspm": "^0.15.7"
+    "jspm": "^0.15.7",
+    "mocha": "^2.2.5"
   }
 }
