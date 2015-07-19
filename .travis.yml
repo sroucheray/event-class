@@ -2,5 +2,5 @@ language: node_js
 node_js:
   - "0.12"
 before_script:
-  - "jspm config registry.github.auth $GH_TOKEN"
+  - "jspm config registries.github.auth $GH_TOKEN"
   - "jspm install"
