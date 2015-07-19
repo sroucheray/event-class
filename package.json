@@ -38,9 +38,9 @@
     }
   },
   "devDependencies": {
+    "bower-traceur": "jmcriffey/bower-traceur",
+    "bower-traceur-runtime": "jmcriffey/bower-traceur-runtime",
     "jspm": "^0.15.7",
-    "mocha": "^2.2.5",
-    "traceur": "github:jmcriffey/bower-traceur@0.0.88",
-    "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.88"
+    "mocha": "^2.2.5"
   }
 }
