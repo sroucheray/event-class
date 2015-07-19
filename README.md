@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/sroucheray/event-class.svg?branch=master)](https://travis-ci.org/sroucheray/event-class)
 # A lightweight Event class defined in small module (JavaScript/ES6)
 
 
