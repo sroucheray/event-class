@@ -5,7 +5,6 @@ Trigger and listen to events the ES6 way.
 
 This script is an ES6 `module`. It exports a simple ES6 `class`.
 
-
 ## API
 
 The `class` provided in this `module` can be directly instantiated or can extend your own class.
@@ -36,9 +35,9 @@ Other valid events are :
 * `"change:name"`
 * `"change:attribute:gender"`
 
-When listening to an event you listen also to all the channels of thsi event. By listening to `"change"`, you'll be notified when `"change:name"` and `"change:attribute:gender"` are triggered. By listening to `"change:attribute"` you won't be notified when `"change:name"` is triggered.
+When listening to an event you listen also to all the channels of this event. By listening to `"change"`, you'll be notified when `"change:name"` and `"change:attribute:gender"` are triggered. By listening to `"change:attribute"` you won't be notified when `"change:name"` is triggered.
 
-You can mix channels and multiple events :
+You can mix channels and multiple events.
 Other valid events are :
 * `"init change:name"`
 * `"change:name change:attribute:gender"`
@@ -66,7 +65,6 @@ Detaches the `callback` from the event triggering.
 The `event` string has the same caracteristics as for the `on` method.
 <br><br>
 `callback` is the function use with `on` or `one`.
-
 
 ## Example
 
