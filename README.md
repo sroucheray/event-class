@@ -42,7 +42,7 @@ Other valid events are :
 * `"init change:name"`
 * `"change:name change:attribute:gender"`
 
-<br><br>
+<br>
 `callback` is a function called when the listened event is triggered.
 If multiple callbacks listen to the same event they are called in order. `callback` as a single arguments, the data passed to the `trigger` method.
 
@@ -65,7 +65,7 @@ Detaches the `callback` from the event triggering.
 `event` is a string representing one or several events separated by space or coma.
 The `event` string has the same caracteristics as for the `on` method.
 <br><br>
-`callback` is the function use with `on` or `one`.
+`callback` is the function used by `on` or `one`.
 
 ## Example
 
