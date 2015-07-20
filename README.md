@@ -41,6 +41,7 @@ You can mix channels and multiple events.
 Other valid events are :
 * `"init change:name"`
 * `"change:name change:attribute:gender"`
+
 <br><br>
 `callback` is a function called when the listened event is triggered.
 If multiple callbacks listen to the same event they are called in order. `callback` as a single arguments, the data passed to the `trigger` method.
