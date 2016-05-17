@@ -1,9 +1,10 @@
 const multiChannelSep = /(?:,|\s)+/g;
 const channelSep = /:+/g;
+const channelsSymbol = Symbol("channels");
 
 class EventClass {
     constructor(){
-        this._channels = {};
+        this[channelsSymbol] = {};
     }
 
     _getChannels(channelString){
@@ -27,11 +28,11 @@ class EventClass {
         for (let channel of channels){
             let namespaces = this._getNameSpaces(channel);
             for (let namespace of namespaces){
-                if(!this._channels[namespace]){
+                if(!this[channelsSymbol][namespace]){
                     continue;
                 }
 
-                for(let callback of this._channels[namespace]){
+                for(let callback of this[channelsSymbol][namespace]){
                     callback.call(this, data);
                 }
             }
@@ -42,11 +43,11 @@ class EventClass {
         let channels = this._getChannels(event);
 
         for (let channel of channels){
-            if(!this._channels[channel]){
-                this._channels[channel] = [];
+            if(!this[channelsSymbol][channel]){
+                this[channelsSymbol][channel] = [];
             }
 
-            this._channels[channel].push(callback);
+            this[channelsSymbol][channel].push(callback);
         }
     }
 
@@ -54,14 +55,14 @@ class EventClass {
         let channels = this._getChannels(event);
 
         for (let channel of channels){
-            if(!this._channels[channel]){
+            if(!this[channelsSymbol][channel]){
                 return;
             }
 
-            let index = this._channels[channel].indexOf(callback);
+            let index = this[channelsSymbol][channel].indexOf(callback);
 
             if(index > -1){
-                this._channels[channel].splice(index, 1);
+                this[channelsSymbol][channel].splice(index, 1);
             }
         }
     }
