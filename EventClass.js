@@ -1,6 +1,6 @@
 const multiChannelSep = /(?:,|\s)+/g;
 const channelSep = /:+/g;
-const channelsSymbol = Symbol("channels");
+const channelsSymbol = Symbol('channels');
 
 class EventClass {
     constructor(){
@@ -15,8 +15,8 @@ class EventClass {
         let namespaces = [];
         let splittedChannels = channel.trim().split(channelSep);
 
-        for (var i = splittedChannels.length; i >= 1; i--) {
-            namespaces.push(splittedChannels.slice(0, i).join(":"))
+        for (let i = splittedChannels.length; i >= 1; i--) {
+            namespaces.push(splittedChannels.slice(0, i).join(':'));
         }
 
         return namespaces;
